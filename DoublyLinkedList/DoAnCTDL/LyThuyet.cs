@@ -189,20 +189,38 @@ namespace DoAnCTDL
         }
         private void DeleteTail()
         {
-            if (nodes.Count > 1)
+            if (nodes.Count == 0)
             {
-                nodes.Last().Dispose();
-                nodes.Last.Previous.Value.Dispose();
-                nodes.RemoveLast();
-                nodes.RemoveLast();
-            }
-            else if (nodes.Count == 1)
-            {
-                nodes.Last().Dispose();
-                nodes.RemoveLast();
-            }
-            else
                 MessageBox.Show("Danh sách rỗng!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (nodes.Count == 1)
+            {
+                nodes.First().Dispose();
+                nodes.RemoveFirst();
+                return;
+            }
+            foreach (var button in panel1.Controls.OfType<Button>())
+                button.Enabled = false;
+            var current = nodes.First;
+            for (int i = 0; i <= nodes.Count/2; i++)
+            {
+                Label lbl = current.Value.Controls.Find("Value", true).FirstOrDefault() as Label;
+                lbl.BackColor = Color.FromArgb(235, 59, 90);
+                this.Refresh();
+                if (i == nodes.Count / 2)
+                    break;
+                Thread.Sleep(200);
+                lbl.BackColor = Color.Transparent;
+                current = current.Next.Next;
+            }
+            Thread.Sleep(200);
+            nodes.Last().Dispose();
+            nodes.Last.Previous.Value.Dispose();
+            nodes.RemoveLast();
+            nodes.RemoveLast();
+            foreach (var button in panel1.Controls.OfType<Button>())
+                button.Enabled = true;
         }
         private void DeleteAtIndex()
         {
@@ -211,13 +229,17 @@ namespace DoAnCTDL
                 MessageBox.Show("Danh sách rỗng!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            int index = Convert.ToInt32(indexNum.Value);
+            if (index == 0)
+            {
+                DeleteHead();
+                return;
+            }
             foreach (var button in panel1.Controls.OfType<Button>())
                 button.Enabled = false;
-            int index = Convert.ToInt32(indexNum.Value);
             var current = nodes.First;
             for(int i = 0; i <= index; i++)
             {
-                Thread.Sleep(200);
                 Label lbl = current.Value.Controls.Find("Value", true).FirstOrDefault() as Label;
                 lbl.BackColor = Color.FromArgb(235, 59, 90);
                 this.Refresh();
@@ -228,14 +250,12 @@ namespace DoAnCTDL
                 current = current.Next.Next;
             }
             Thread.Sleep(200);
-            if(index==0)
-            {
-                DeleteHead();
-                return;
-            }
             if(index== nodes.Count/2)
             {
-                DeleteTail();
+                nodes.Last().Dispose();
+                nodes.Last.Previous.Value.Dispose();
+                nodes.RemoveLast();
+                nodes.RemoveLast();
                 foreach (var button in panel1.Controls.OfType<Button>())
                     button.Enabled = true;
                 return;
@@ -263,7 +283,6 @@ namespace DoAnCTDL
                 button.Enabled = false;
             foreach (var temp in nodes)
             {
-                Thread.Sleep(100);
                 if (temp.Controls.Count == 0)
                     continue;
                 Label lbl = temp.Controls.Find("Value", true).FirstOrDefault() as Label;
@@ -284,7 +303,6 @@ namespace DoAnCTDL
             foreach (var button in panel1.Controls.OfType<Button>())
                 button.Enabled = true;
         }
-
         private void Clear(object sender, EventArgs e)
         {
             foreach(var temp in nodes)
@@ -364,7 +382,6 @@ namespace DoAnCTDL
             var current = nodes.First;
             for (int i = 0; i <= nodes.Count/2; i++)
             {
-                Thread.Sleep(200);
                 Label lbl = current.Value.Controls.Find("Value", true).FirstOrDefault() as Label;
                 lbl.BackColor = Color.FromArgb(235, 59, 90);
                 this.Refresh();
@@ -392,7 +409,10 @@ namespace DoAnCTDL
             }
             if (current == nodes.Last)
             {
-                DeleteTail();
+                nodes.Last().Dispose();
+                nodes.Last.Previous.Value.Dispose();
+                nodes.RemoveLast();
+                nodes.RemoveLast();
                 foreach (var button in panel1.Controls.OfType<Button>())
                     button.Enabled = true;
                 return;
@@ -412,7 +432,6 @@ namespace DoAnCTDL
             textBox1.Text = "";
             textBox1.Enabled = true;
             indexNum.Maximum = nodes.Count/2;
-            //indexNum.Minimum = 0;
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
