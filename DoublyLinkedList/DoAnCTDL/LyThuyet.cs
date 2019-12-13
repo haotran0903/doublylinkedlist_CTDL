@@ -236,10 +236,10 @@ namespace DoAnCTDL
             if(index== nodes.Count/2)
             {
                 DeleteTail();
+                foreach (var button in panel1.Controls.OfType<Button>())
+                    button.Enabled = true;
                 return;
             }
-            foreach (var button in panel1.Controls.OfType<Button>())
-                button.Enabled = false;
             current.Next.Value.Dispose();
             current.Value.Dispose();
             nodes.Remove(current.Next);
@@ -247,7 +247,6 @@ namespace DoAnCTDL
             temp = nodes.Last().Location;
             timer5.Start();
         }
-
         private void Search()
         {
             if (nodes.Count == 0)
@@ -264,7 +263,7 @@ namespace DoAnCTDL
                 button.Enabled = false;
             foreach (var temp in nodes)
             {
-                Thread.Sleep(200);
+                Thread.Sleep(100);
                 if (temp.Controls.Count == 0)
                     continue;
                 Label lbl = temp.Controls.Find("Value", true).FirstOrDefault() as Label;
@@ -348,7 +347,6 @@ namespace DoAnCTDL
                 node = node.Next;
             }
         }
-
         private void DeleteByData()
         {
             if (nodes.Count == 0)
@@ -385,7 +383,6 @@ namespace DoAnCTDL
                     break;
                 current = current.Next.Next;
             }
-            Thread.Sleep(200);
             if (current == nodes.First)
             {
                 DeleteHead();
@@ -475,7 +472,6 @@ namespace DoAnCTDL
                     break;
                 case 5:
                     DeleteAtIndex();
-                    textBox1.Enabled = true;
                     break;
                 case 6:
                     Search();
